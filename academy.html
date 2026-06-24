@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Academy | TechNova Solutions</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">T</div>
+          <div>
+            <h1>TechNova Solutions</h1>
+            <p class="tagline">Build skills with notes, tutorials, videos, and hands-on exercises.</p>
+          </div>
+        </div>
+        <nav class="site-nav">
+          <a href="index.html">Home</a>
+          <a href="about.html">About Us</a>
+          <a href="services.html">Services</a>
+          <a href="academy.html">Academy</a>
+          <a href="booking.html">Booking</a>
+          <a href="admin_login.html">Admin</a>
+        </nav>
+      </div>
+
+      <div class="hero-content">
+        <div class="welcome-text animate-fade">
+          <h2>TechNova Academy</h2>
+          <p>Professional learning resources for students and aspiring developers. Start with notes, tutorials, videos, exercises, and downloadable PDFs.</p>
+        </div>
+        <img class="hero-illustration animate-pop" src="images/hero-illustration.svg" alt="Illustration">
+      </div>
+    </header>
+
+    <main class="container">
+      <div id="academy-gate" class="academy-gate section-bg animate-fade">
+        <div class="auth-card">
+          <p class="tiny-label">STUDENT PORTAL</p>
+          <h2>Secure Academy Access</h2>
+          <p>Sign in to access your personal curriculum, instructor resources, and curated learning materials.</p>
+          <form id="academy-login-form" class="contact-form">
+            <div class="form-group">
+              <label for="academy-name">Full name</label>
+              <input id="academy-name" name="name" type="text" placeholder="Your full name" />
+            </div>
+            <div class="form-group">
+              <label for="academy-email">Email address</label>
+              <input id="academy-email" name="email" type="email" placeholder="you@domain.com" required />
+            </div>
+            <div class="form-group">
+              <label for="academy-password">Password</label>
+              <input id="academy-password" name="password" type="password" placeholder="Enter a secure password" required />
+            </div>
+            <div class="form-actions">
+              <button class="button" type="submit">Sign in</button>
+              <button id="academy-register" class="button button-secondary" type="button">Create account</button>
+            </div>
+            <p class="small-text">This platform is reserved for registered students. Your account will be reviewed by the academy administrator before access is granted.</p>
+          </form>
+          <p id="academy-message" class="auth-message">Sign in to continue to your learning dashboard.</p>
+        </div>
+      </div>
+
+      <div id="academy-content" style="display:none;">
+      <div id="academy-status" class="auth-status" style="display:none;">
+        <p>Signed in as <strong id="academy-user-name"></strong>. <a href="#" id="academy-signout" class="button button-secondary small-button">Sign out</a></p>
+      </div>
+
+      <section>
+        <h2>Learning Resources</h2>
+        <div class="resource-grid">
+          <article class="resource-card">
+            <h3>Notes</h3>
+            <p>Clear, structured notes for programming fundamentals, web development, and computer basics.</p>
+          </article>
+          <article class="resource-card">
+            <h3>Tutorials</h3>
+            <p>Step-by-step tutorials that match real-world projects and help students build practical skills.</p>
+          </article>
+          <article class="resource-card">
+            <h3>Videos</h3>
+            <p>Professional video lessons that explain topics visually and make learning easier.</p>
+          </article>
+          <article class="resource-card">
+            <h3>Coding Exercises</h3>
+            <p>Practice problems designed to reinforce learning and develop confidence with programming.</p>
+          </article>
+        </div>
+      </section>
+
+      <section>
+        <h2>Uploaded Documents & Tutorials</h2>
+        <p>Access your course documents and instructor resources in one secure location.</p>
+        <div id="documents-list" class="resource-grid"></div>
+      </section>
+
+      <section>
+        <h2>Downloadable Study Guides</h2>
+        <p>Download professionally formatted PDF guides covering Java, HTML/CSS, JavaScript, Boolean algebra, and computer fundamentals.</p>
+        <ul class="service-list">
+          <li>Java programming guide</li>
+          <li>HTML & CSS essentials</li>
+          <li>JavaScript quick reference</li>
+          <li>Boolean algebra basics</li>
+          <li>Computer fundamentals overview</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Why Choose Our Academy?</h2>
+        <p>With over 5 years delivering technology education and digital services, TechNova blends practical guidance with modern learning materials.</p>
+        <ul class="service-list">
+          <li>Designed for beginners and growing students</li>
+          <li>Real examples, not just theory</li>
+          <li>Fast learning with downloadable resources</li>
+          <li>Hands-on coding practice</li>
+        </ul>
+      </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>We build modern websites, mobile apps, teach programming, and provide computer solutions.</p>
+      </div>
+    </footer>
+
+    <script>
+      (function(){
+        const TUTORIAL_KEY = 'technova_tutorials';
+        const USER_KEY = 'technova_users';
+        const SESSION_KEY = 'technova_student_session';
+
+        const gate = document.getElementById('academy-gate');
+        const content = document.getElementById('academy-content');
+        const status = document.getElementById('academy-status');
+        const signedInName = document.getElementById('academy-user-name');
+        const loginForm = document.getElementById('academy-login-form');
+        const registerBtn = document.getElementById('academy-register');
+        const signOutLink = document.getElementById('academy-signout');
+        const messageBox = document.getElementById('academy-message');
+
+        function safeParse(key){ try{ return JSON.parse(localStorage.getItem(key)||'null')||[]; }catch(e){ return []; } }
+        function getUsers(){ return safeParse(USER_KEY); }
+        function saveUsers(users){ localStorage.setItem(USER_KEY, JSON.stringify(users)); }
+        function findUserByEmail(email){ return getUsers().find(u => u.email === email.toLowerCase()); }
+        function saveSession(user){ localStorage.setItem(SESSION_KEY, JSON.stringify(user)); }
+        function getSession(){ try{ return JSON.parse(localStorage.getItem(SESSION_KEY)); }catch(e){ return null; } }
+        function clearSession(){ localStorage.removeItem(SESSION_KEY); }
+
+        function showMessage(text, type='info'){
+          if(!messageBox) return;
+          messageBox.textContent = text;
+          messageBox.className = 'auth-message ' + type;
+        }
+
+        function updateAuthState(user){
+          const signedIn = !!user;
+          gate.style.display = signedIn ? 'none' : 'block';
+          content.style.display = signedIn ? 'block' : 'none';
+          status.style.display = signedIn ? 'block' : 'none';
+          if(signedIn){ signedInName.textContent = user.name || user.email || 'Student'; }
+        }
+
+        function getTutorials(){ try{ return JSON.parse(localStorage.getItem(TUTORIAL_KEY) || '[]'); } catch(e){ return []; } }
+        function getFileExtIcon(filename){
+          if(!filename) return '<i data-lucide="link-2" class="inline-icon"></i>';
+          const ext = filename.split('.').pop().toLowerCase();
+          if(['pdf'].includes(ext)) return '<i data-lucide="file-text" class="inline-icon"></i>';
+          if(['doc','docx'].includes(ext)) return '<i data-lucide="file-text" class="inline-icon"></i>';
+          if(['jpg','png','gif'].includes(ext)) return '<i data-lucide="image" class="inline-icon"></i>';
+          if(['txt'].includes(ext)) return '<i data-lucide="file-text" class="inline-icon"></i>';
+          return '<i data-lucide="link-2" class="inline-icon"></i>';
+        }
+
+        function getCategoryIcon(category){
+          const key = (category || '').toLowerCase();
+          if(key.includes('notes')) return '<i data-lucide="book-open" class="inline-icon"></i>';
+          if(key.includes('tutorial')) return '<i data-lucide="play-circle" class="inline-icon"></i>';
+          if(key.includes('exercise')) return '<i data-lucide="code" class="inline-icon"></i>';
+          if(key.includes('pdf')) return '<i data-lucide="file-text" class="inline-icon"></i>';
+          if(key.includes('video')) return '<i data-lucide="video" class="inline-icon"></i>';
+          return '<i data-lucide="archive" class="inline-icon"></i>';
+        }
+
+        function maybeReplaceLucide(){
+          if(window.lucide && typeof lucide.replace === 'function'){
+            lucide.replace({ width: 18, height: 18, strokeWidth: 2 });
+          }
+        }
+
+        function renderDocuments(){
+          const list = getTutorials();
+          const container = document.getElementById('documents-list');
+          if(!container) return;
+
+          container.innerHTML = '';
+          if(list.length === 0) {
+            container.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;text-align:center;">No documents uploaded yet. Check back soon.</p>';
+            return;
+          }
+
+          list.forEach((doc) => {
+            const card = document.createElement('article');
+            card.className = 'resource-card';
+            const fileIcon = doc.filename ? getFileExtIcon(doc.filename) : '<i data-lucide="link-2" class="inline-icon"></i>';
+            const fileSize = doc.filesize ? ' (' + (doc.filesize / 1024).toFixed(1) + 'KB)' : '';
+            const createdDate = doc.created ? new Date(doc.created).toLocaleDateString() : '';
+
+            let actionBtn = '';
+            if(doc.file){
+              actionBtn = `<a class="button" download="${doc.filename || 'download'}" href="${doc.file}">Download</a>`;
+            } else if(doc.link){
+              actionBtn = `<a class="button" href="${doc.link}" target="_blank">View External</a>`;
+            }
+
+            const categoryIcon = getCategoryIcon(doc.category);
+            card.innerHTML = `
+              <h3>${fileIcon} ${doc.title}</h3>
+              <p><strong>${categoryIcon}${doc.category || 'Resource'}</strong></p>
+              <p>${doc.desc || ''}</p>
+              <p style="font-size:0.9rem;color:var(--muted)">${doc.filename || 'External link'}${fileSize} ${createdDate ? '• ' + createdDate : ''}</p>
+              <div style="display:flex;gap:0.5rem">${actionBtn}</div>
+            `;
+            container.appendChild(card);
+          });
+          maybeReplaceLucide();
+        }
+
+        function signIn(email, password){
+          const user = findUserByEmail(email);
+          if(!user){ showMessage('No account found for this email. Please create an account.', 'error'); return false; }
+          if(user.status === 'pending'){ showMessage('Your account is pending approval from the academy administrator.', 'error'); return false; }
+          if(user.status !== 'approved'){ showMessage('Your account is not active. Contact the academy administrator.', 'error'); return false; }
+          if(user.password !== password){ showMessage('Email or password do not match. Try again.', 'error'); return false; }
+          saveSession({email: user.email, name: user.name});
+          updateAuthState(user);
+          renderDocuments();
+          showMessage('Welcome back, ' + user.name + '. Your study materials are ready.', 'success');
+          return true;
+        }
+
+        function registerStudent(name, email, password){
+          if(!name || !email || !password){ showMessage('Please enter your full name, email and password.', 'error'); return; }
+          if(findUserByEmail(email)){ showMessage('This email is already registered. Please sign in.', 'error'); return; }
+          const user = { name: name.trim(), email: email.toLowerCase(), password, status: 'pending', registered: new Date().toISOString() };
+          const users = getUsers();
+          users.unshift(user);
+          saveUsers(users);
+          loginForm.reset();
+          showMessage('Account created. Your access is pending approval by the academy administrator.', 'success');
+        }
+
+        loginForm?.addEventListener('submit', function(e){
+          e.preventDefault();
+          const email = document.getElementById('academy-email').value.trim();
+          const password = document.getElementById('academy-password').value;
+          if(!email || !password){ showMessage('Please fill in your email and password.', 'error'); return; }
+          signIn(email, password);
+        });
+
+        registerBtn?.addEventListener('click', function(){
+          const name = document.getElementById('academy-name').value.trim();
+          const email = document.getElementById('academy-email').value.trim();
+          const password = document.getElementById('academy-password').value;
+          registerStudent(name, email, password);
+        });
+
+        signOutLink?.addEventListener('click', function(e){
+          e.preventDefault();
+          clearSession();
+          updateAuthState(null);
+          showMessage('Signed out. Sign in again to access academy materials.', 'info');
+        });
+
+        const activeUser = getSession();
+        if(activeUser){
+          const storedUser = findUserByEmail(activeUser.email);
+          if(storedUser && storedUser.status === 'approved'){
+            updateAuthState(storedUser);
+            renderDocuments();
+          } else {
+            clearSession();
+            updateAuthState(null);
+            if(storedUser && storedUser.status === 'pending'){
+              showMessage('Your account is still pending approval. Please wait for admin confirmation.', 'error');
+            }
+          }
+        }
+      })();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.431.0/dist/lucide.min.js"></script>
+    <script src="scripts/main.js"></script>
+  </body>
+</html>

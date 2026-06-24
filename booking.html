@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking | TechNova Solutions</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">T</div>
+          <div>
+            <h1>TechNova Solutions</h1>
+            <p class="tagline">Book a service with our professional team today.</p>
+          </div>
+        </div>
+        <nav class="site-nav">
+          <a href="index.html">Home</a>
+          <a href="about.html">About Us</a>
+          <a href="services.html">Services</a>
+          <a href="academy.html">Academy</a>
+          <a href="booking.html">Booking</a>
+          <a href="admin_login.html">Admin</a>
+        </nav>
+      </div>
+
+      <div class="hero-content">
+        <div class="welcome-text animate-fade">
+          <h2>Book a Session</h2>
+          <p>Choose a service, pick a date, and send your request instantly to our email.</p>
+        </div>
+        <img class="hero-illustration animate-pop" src="images/hero-illustration.svg" alt="Illustration">
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="section-bg booking-summary">
+        <h2>Booking Form</h2>
+        <p>We offer three main booking options: website design, computer repair, and programming classes.</p>
+        <form id="booking-page-form" class="contact-form">
+          <div class="form-group">
+            <label for="booking-name"><i data-lucide="user" class="field-icon"></i>Name</label>
+            <input id="booking-name" name="name" type="text" placeholder="Your full name" required />
+          </div>
+          <div class="form-group">
+            <label for="booking-email"><i data-lucide="mail" class="field-icon"></i>Email</label>
+            <input id="booking-email" name="email" type="email" placeholder="you@example.com" required />
+          </div>
+          <div class="form-group">
+            <label for="booking-phone"><i data-lucide="phone" class="field-icon"></i>Phone number</label>
+            <input id="booking-phone" name="phone" type="tel" placeholder="+232 99-68-18-51" required />
+          </div>
+          <div class="form-group">
+            <label for="booking-service"><i data-lucide="clipboard" class="field-icon"></i>Choose service</label>
+            <select id="booking-service" name="service" required>
+              <option value="Website design">Website design</option>
+              <option value="Computer repair">Computer repair</option>
+              <option value="Programming class">Programming class</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="booking-date-page"><i data-lucide="calendar" class="field-icon"></i>Choose date</label>
+            <input id="booking-date-page" name="date" type="date" required />
+          </div>
+          <div class="form-group">
+            <label for="booking-message-page"><i data-lucide="message-circle" class="field-icon"></i>Message</label>
+            <textarea id="booking-message-page" name="message" rows="5" placeholder="Tell us what you need..." required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>
+              <input id="pay-now" type="checkbox" /> <i data-lucide="credit-card" class="field-icon"></i>Pay now (secure checkout)
+            </label>
+          </div>
+
+          <div id="paypal-section" style="display:none;margin-bottom:1rem;">
+            <p style="margin:0 0 0.5rem 0;color:var(--muted);font-size:0.9rem;">Complete secure payment using PayPal.</p>
+            <div id="paypal-button-container"></div>
+          </div>
+
+          <div class="form-actions">
+            <button class="button" type="submit">Send Booking Request</button>
+            <a class="button button-secondary" href="https://wa.me/23299681851?text=Hello%20TechNova%20Solutions%20I%20want%20to%20book%20a%20service" target="_blank" rel="noopener">Chat With Us</a>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>We build modern websites, mobile apps, teach programming, and provide computer solutions.</p>
+      </div>
+    </footer>
+
+    <!-- PayPal SDK for secure client-side payments -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AYzV0SZW_nQlPPZDCdLEg6p3Hlo-_z96X8AhIWR9sYQJTlf3xJ-oQJ9Xdq2qvhzUtQm_Bfj5tZgYf-c&currency=USD"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.431.0/dist/lucide.min.js"></script>
+    <script src="scripts/main.js"></script>
+  </body>
+</html>

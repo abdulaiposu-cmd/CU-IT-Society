@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Bookings | TechNova Solutions</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">T</div>
+          <div>
+            <h1>Manage Bookings</h1>
+            <p class="tagline">Review and manage booking requests (demo).</p>
+          </div>
+        </div>
+        <nav class="site-nav">
+          <a href="admin.html">Dashboard</a>
+          <a href="admin_upload.html">Upload</a>
+          <a href="admin_users.html">Users</a>
+          <a href="index.html">View Site</a>
+          <a href="#" id="admin-signout">Sign out</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>Bookings</h2>
+        <div id="bookings-list" class="resource-grid"></div>
+        <p>If you received booking requests via email, you can replicate them here for demo management.</p>
+        <form id="booking-demo-add" class="contact-form">
+          <div class="form-group"><label for="b-name">Name</label><input id="b-name" type="text" required></div>
+          <div class="form-group"><label for="b-email">Email</label><input id="b-email" type="email" required></div>
+          <div class="form-group"><label for="b-service">Service</label><input id="b-service" type="text" required></div>
+          <div class="form-group"><label for="b-date">Date</label><input id="b-date" type="date" required></div>
+          <div class="form-actions"><button class="button" type="submit">Add Booking (demo)</button></div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>Admin demo — bookings stored locally for management.</p>
+      </div>
+    </footer>
+
+    <script>
+      const BOOK_KEY = 'technova_bookings';
+      function getBookings(){ try{return JSON.parse(localStorage.getItem(BOOK_KEY)||'[]')}catch(e){return[]} }
+      function saveBookings(arr){ localStorage.setItem(BOOK_KEY, JSON.stringify(arr)); }
+      function renderBookings(){ const c=document.getElementById('bookings-list'); c.innerHTML=''; getBookings().forEach((b,i)=>{ const card=document.createElement('article'); card.className='resource-card'; card.innerHTML=`<h3>${b.name} — ${b.service}</h3><p>${b.email} • ${b.date}</p><p>${b.message||''}</p><p><a class="button button-secondary" data-index="${i}">Delete</a></p>`; c.appendChild(card); }); c.querySelectorAll('.button-secondary[data-index]').forEach(btn=> btn.addEventListener('click', ()=>{ const idx=Number(btn.getAttribute('data-index')); const arr=getBookings(); arr.splice(idx,1); saveBookings(arr); renderBookings(); })); }
+      document.getElementById('booking-demo-add').addEventListener('submit', function(e){ e.preventDefault(); const name=document.getElementById('b-name').value.trim(); const email=document.getElementById('b-email').value.trim(); const service=document.getElementById('b-service').value.trim(); const date=document.getElementById('b-date').value; const arr=getBookings(); arr.unshift({name,email,service,date}); saveBookings(arr); renderBookings(); this.reset(); alert('Booking added (demo).'); });
+      renderBookings();
+    </script>
+      <script>
+        (function(){
+          const s = localStorage.getItem('technova_admin_session');
+          if(!s){ window.location.href='admin_login.html'; return; }
+          document.getElementById('admin-signout').addEventListener('click', function(e){ e.preventDefault(); localStorage.removeItem('technova_admin_session'); window.location.href='admin_login.html'; });
+        })();
+      </script>
+  </body>
+</html>

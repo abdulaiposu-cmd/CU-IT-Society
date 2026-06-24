@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Testimonials | TechNova Solutions</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">T</div>
+          <div>
+            <h1>TechNova Solutions</h1>
+            <p class="tagline">Share your experience with our services or courses.</p>
+          </div>
+        </div>
+        <nav class="site-nav">
+          <a href="index.html">Home</a>
+          <a href="about.html">About Us</a>
+          <a href="services.html">Services</a>
+          <a href="academy.html">Academy</a>
+          <a href="booking.html">Booking</a>
+          <a href="admin_login.html">Admin</a>
+        </nav>
+      </div>
+
+      <div class="hero-content">
+        <div class="welcome-text animate-fade">
+          <h2>Leave a Review</h2>
+          <p>Your feedback helps us improve — please be honest and specific.</p>
+        </div>
+        <img class="hero-illustration animate-pop" src="images/hero-illustration.svg" alt="Illustration">
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="section-bg testimonials">
+        <h2>Write a Testimonial</h2>
+        <form id="testimonial-form" class="contact-form">
+          <div class="form-group">
+            <label for="t-name">Name</label>
+            <input id="t-name" name="name" type="text" placeholder="Your name" required />
+          </div>
+          <div class="form-group">
+            <label for="t-role">Role</label>
+            <input id="t-role" name="role" type="text" placeholder="Student, Business owner (optional)" />
+          </div>
+          <div class="form-group">
+            <label for="t-message">Message</label>
+            <textarea id="t-message" name="message" rows="5" placeholder="What did you like?" required></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="button" type="submit">Submit Review</button>
+            <a class="button button-secondary" href="index.html">Back Home</a>
+          </div>
+        </form>
+      </section>
+
+      <section>
+        <h2>All Reviews</h2>
+        <div id="all-testimonials" class="testimonial-grid"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>We build modern websites, mobile apps, teach programming, and provide computer solutions.</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.431.0/dist/lucide.min.js"></script>
+    <script src="scripts/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Users | TechNova Solutions</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">T</div>
+          <div>
+            <h1>Student Accounts</h1>
+            <p class="tagline">Review new student registrations and approve access to the academy.</p>
+          </div>
+        </div>
+        <nav class="site-nav">
+          <a href="admin.html">Dashboard</a>
+          <a href="admin_upload.html">Upload</a>
+          <a href="admin_bookings.html">Bookings</a>
+          <a href="index.html">View Site</a>
+          <a href="#" id="admin-signout">Sign out</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>Student Accounts</h2>
+        <form id="user-add-form" class="contact-form">
+          <div class="form-group">
+            <label for="u-name">Name</label>
+            <input id="u-name" type="text" required />
+          </div>
+          <div class="form-group">
+            <label for="u-email">Email</label>
+            <input id="u-email" type="email" required />
+          </div>
+          <div class="form-actions">
+            <button class="button" type="submit">Create Approved Account</button>
+            <a class="button button-secondary" href="admin.html">Back</a>
+          </div>
+          <p class="small-text">Use this form to add students directly with approved access.</p>
+        </form>
+
+        <div id="users-list" style="margin-top:1.25rem;"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>Admin demo — user list stored locally.</p>
+      </div>
+    </footer>
+
+    <script>
+      const USER_KEY = 'technova_users';
+      function getUsers(){ try{return JSON.parse(localStorage.getItem(USER_KEY)||'[]')}catch(e){return[]} }
+      function saveUsers(arr){ localStorage.setItem(USER_KEY, JSON.stringify(arr)); }
+      function renderUsers(){
+        const container = document.getElementById('users-list');
+        container.innerHTML = '';
+        const users = getUsers();
+        const pending = users.filter(u => u.status === 'pending');
+        const approved = users.filter(u => u.status === 'approved');
+
+        const pendingSection = document.createElement('div');
+        pendingSection.innerHTML = '<h3>Pending Approvals</h3>';
+        if(pending.length === 0){
+          const note = document.createElement('p');
+          note.style.color = 'var(--muted)';
+          note.textContent = 'No pending approvals at this time.';
+          pendingSection.appendChild(note);
+        } else {
+          const grid = document.createElement('div');
+          grid.className = 'resource-grid';
+          pending.forEach(u=>{
+            const card = document.createElement('article');
+            card.className = 'resource-card';
+            card.innerHTML = `
+              <h4>${u.name}</h4>
+              <p>${u.email}</p>
+              <p class="status-label status-pending">Pending approval</p>
+              <div class="action-row">
+                <button class="button" data-action="approve" data-email="${u.email}">Approve</button>
+                <button class="button button-secondary" data-action="delete" data-email="${u.email}">Delete</button>
+              </div>
+            `;
+            grid.appendChild(card);
+          });
+          pendingSection.appendChild(grid);
+        }
+        container.appendChild(pendingSection);
+
+        const approvedSection = document.createElement('div');
+        approvedSection.style.marginTop = '1.5rem';
+        approvedSection.innerHTML = '<h3>Approved Students</h3>';
+        if(approved.length === 0){
+          const note = document.createElement('p');
+          note.style.color = 'var(--muted)';
+          note.textContent = 'No approved students yet.';
+          approvedSection.appendChild(note);
+        } else {
+          const grid = document.createElement('div');
+          grid.className = 'resource-grid';
+          approved.forEach(u=>{
+            const card = document.createElement('article');
+            card.className = 'resource-card';
+            card.innerHTML = `
+              <h4>${u.name}</h4>
+              <p>${u.email}</p>
+              <p class="status-label status-approved">Approved</p>
+              <div class="action-row">
+                <button class="button button-secondary" data-action="delete" data-email="${u.email}">Remove</button>
+              </div>
+            `;
+            grid.appendChild(card);
+          });
+          approvedSection.appendChild(grid);
+        }
+        container.appendChild(approvedSection);
+
+        container.querySelectorAll('button[data-action]').forEach(btn=>{
+          btn.addEventListener('click', function(){
+            const email = this.dataset.email;
+            const action = this.dataset.action;
+            const users = getUsers();
+            const idx = users.findIndex(u => u.email === email);
+            if(idx === -1) return;
+            if(action === 'approve'){
+              users[idx].status = 'approved';
+            } else {
+              users.splice(idx,1);
+            }
+            saveUsers(users);
+            renderUsers();
+          });
+        });
+      }
+
+      document.getElementById('user-add-form').addEventListener('submit', function(e){
+        e.preventDefault();
+        const name = document.getElementById('u-name').value.trim();
+        const email = document.getElementById('u-email').value.trim().toLowerCase();
+        if(!name || !email){ alert('Name and email are required.'); return; }
+        const users = getUsers();
+        if(users.some(u=>u.email === email)){ alert('A user with this email already exists.'); return; }
+        users.unshift({name,email,status:'approved',created:new Date().toISOString()});
+        saveUsers(users);
+        renderUsers();
+        this.reset();
+        alert('Approved student account created.');
+      });
+
+      renderUsers();
+    </script>
+      <script>
+        (function(){
+          const s = localStorage.getItem('technova_admin_session');
+          if(!s){ window.location.href='admin_login.html'; return; }
+          document.getElementById('admin-signout').addEventListener('click', function(e){ e.preventDefault(); localStorage.removeItem('technova_admin_session'); window.location.href='admin_login.html'; });
+        })();
+      </script>
+  </body>
+</html>

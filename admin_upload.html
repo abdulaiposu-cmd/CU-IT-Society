@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Upload | TechNova Solutions</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">T</div>
+          <div>
+            <h1>Upload Tutorials</h1>
+            <p class="tagline">Add new learning materials to the Academy (demo).</p>
+          </div>
+        </div>
+        <nav class="site-nav">
+          <a href="admin.html">Dashboard</a>
+          <a href="admin_users.html">Users</a>
+          <a href="admin_bookings.html">Bookings</a>
+          <a href="index.html">View Site</a>
+          <a href="#" id="admin-signout">Sign out</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>Upload Documents & Tutorials</h2>
+        <form id="upload-form" class="contact-form">
+          <div class="form-group">
+            <label for="t-title">Tutorial Title</label>
+            <input id="t-title" type="text" placeholder="e.g., Java Basics, HTML Essentials" required />
+          </div>
+          <div class="form-group">
+            <label for="t-desc">Description</label>
+            <textarea id="t-desc" rows="3" placeholder="Describe this tutorial briefly..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="t-category">Category</label>
+            <select id="t-category">
+              <option value="Notes">Notes</option>
+              <option value="Tutorial">Tutorial</option>
+              <option value="Exercise">Exercise</option>
+              <option value="PDF Guide">PDF Guide</option>
+              <option value="Video Resource">Video Resource</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="t-file">Upload File (PDF, DOC, Images)</label>
+            <input id="t-file" type="file" accept=".pdf,.doc,.docx,.txt,.jpg,.png,.gif" />
+          </div>
+          <div class="form-group">
+            <label for="t-link">OR external link (URL)</label>
+            <input id="t-link" type="url" placeholder="https://example.com/resource" />
+          </div>
+          <div class="form-actions">
+            <button class="button" type="submit">Save Tutorial</button>
+            <a class="button button-secondary" href="admin.html">Back</a>
+          </div>
+        </form>
+      </section>
+
+      <section>
+        <h2>Existing Tutorials & Documents</h2>
+        <div id="tutorials-list" class="resource-grid"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>Admin demo — uploads are stored in your browser.</p>
+      </div>
+    </footer>
+
+    <script>
+      const TUTORIAL_KEY = 'technova_tutorials';
+      function getTutorials(){ try{ return JSON.parse(localStorage.getItem(TUTORIAL_KEY)||'[]'); }catch(e){return[]} }
+      function saveTutorials(arr){ localStorage.setItem(TUTORIAL_KEY, JSON.stringify(arr)); }
+      
+      function getFileExtIcon(filename){
+        const ext = filename.split('.').pop().toLowerCase();
+        if(['pdf'].includes(ext)) return '<i data-lucide="file-text" class="inline-icon"></i>';
+        if(['doc','docx'].includes(ext)) return '<i data-lucide="file-text" class="inline-icon"></i>';
+        if(['jpg','png','gif'].includes(ext)) return '<i data-lucide="image" class="inline-icon"></i>';
+        if(['txt'].includes(ext)) return '<i data-lucide="file-text" class="inline-icon"></i>';
+        return '<i data-lucide="link-2" class="inline-icon"></i>';
+      }
+
+      function getCategoryIcon(category){
+        const key = (category || '').toLowerCase();
+        if(key.includes('notes')) return '<i data-lucide="book-open" class="inline-icon"></i>';
+        if(key.includes('tutorial')) return '<i data-lucide="play-circle" class="inline-icon"></i>';
+        if(key.includes('exercise')) return '<i data-lucide="code" class="inline-icon"></i>';
+        if(key.includes('pdf')) return '<i data-lucide="file-text" class="inline-icon"></i>';
+        if(key.includes('video')) return '<i data-lucide="video" class="inline-icon"></i>';
+        return '<i data-lucide="archive" class="inline-icon"></i>';
+      }
+      
+      function maybeReplaceLucide(){
+        if(window.lucide && typeof lucide.replace === 'function'){
+          lucide.replace({ width: 18, height: 18, strokeWidth: 2 });
+        }
+      }
+
+      function renderTutorials(){
+        const list = getTutorials();
+        const container = document.getElementById('tutorials-list');
+        container.innerHTML='';
+        if(list.length === 0) { container.innerHTML='<p style="color:var(--muted);grid-column:1/-1">No tutorials uploaded yet.</p>'; return; }
+        list.forEach((t,i)=>{
+          const card = document.createElement('article');
+          card.className='resource-card';
+          const fileIcon = t.filename? getFileExtIcon(t.filename): '<i data-lucide="link-2" class="inline-icon"></i>';
+          const categoryIcon = getCategoryIcon(t.category);
+          const fileSize = t.filesize? ' (' + (t.filesize / 1024).toFixed(1) + 'KB)' : '';
+          const downloadBtn = t.file? `<a class="button button-secondary" download="${t.filename||'download'}" href="${t.file}">Download</a>` : '';
+          const viewBtn = t.link? `<a class="button button-secondary" href="${t.link}" target="_blank">View Link</a>` : '';
+          card.innerHTML=`<h3>${fileIcon} ${t.title}</h3><p><strong>${categoryIcon}${t.category||'Resource'}</strong></p><p>${t.desc||''}</p><p style="font-size:0.9rem;color:var(--muted)">${t.filename||'External link'}${fileSize}</p><div style="display:flex;gap:0.5rem;flex-wrap:wrap">${downloadBtn}${viewBtn}<a class="button button-secondary" data-index="${i}" style="cursor:pointer">Delete</a></div>`;
+          container.appendChild(card);
+        });
+        maybeReplaceLucide();
+        container.querySelectorAll('.button-secondary[data-index]').forEach(btn=>{
+          btn.addEventListener('click', e=>{
+            e.preventDefault();
+            const idx = Number(btn.getAttribute('data-index'));
+            if(confirm('Delete this tutorial?')){
+              const arr = getTutorials(); arr.splice(idx,1); saveTutorials(arr); renderTutorials();
+            }
+          });
+        });
+      }
+      
+      document.getElementById('upload-form').addEventListener('submit', function(e){
+        e.preventDefault();
+        const title = document.getElementById('t-title').value.trim();
+        const desc = document.getElementById('t-desc').value.trim();
+        const category = document.getElementById('t-category').value;
+        const link = document.getElementById('t-link').value.trim();
+        const fileInput = document.getElementById('t-file');
+        
+        if(!title) { alert('Please enter a title'); return; }
+        
+        const tutorial = {title, desc, category, link, created: new Date().toISOString()};
+        
+        // Handle file upload if present
+        if(fileInput.files.length > 0){
+          const file = fileInput.files[0];
+          tutorial.filename = file.name;
+          tutorial.filesize = file.size;
+          tutorial.filetype = file.type;
+          
+          const reader = new FileReader();
+          reader.onload = function(event){
+            tutorial.file = event.target.result; // base64 data URL
+            const arr = getTutorials();
+            arr.unshift(tutorial);
+            saveTutorials(arr);
+            renderTutorials();
+            document.getElementById('upload-form').reset();
+            alert('Tutorial uploaded successfully!');
+          };
+          reader.onerror = function(){ alert('Error reading file'); };
+          reader.readAsDataURL(file);
+        } else {
+          // No file, just link
+          const arr = getTutorials();
+          arr.unshift(tutorial);
+          saveTutorials(arr);
+          renderTutorials();
+          document.getElementById('upload-form').reset();
+          alert('Tutorial saved!');
+        }
+      });
+      
+      renderTutorials();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.431.0/dist/lucide.min.js"></script>
+    <script src="scripts/main.js"></script>
+    <script>
+      (function(){
+        const s = localStorage.getItem('technova_admin_session');
+        if(!s){ window.location.href='admin_login.html'; return; }
+        document.getElementById('admin-signout').addEventListener('click', function(e){ e.preventDefault(); localStorage.removeItem('technova_admin_session'); window.location.href='admin_login.html'; });
+      })();
+    </script>
+  </body>
+</html>
