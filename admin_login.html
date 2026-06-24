@@ -1,102 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Login | TechNova Solutions</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header class="hero">
-      <div class="topbar">
-        <div class="brand">
-          <div class="logo">T</div>
-          <div>
-            <h1>TechNova Admin</h1>
-            <p class="tagline">Secure admin access (demo only — local browser storage)</p>
-          </div>
-        </div>
-        <nav class="site-nav">
-          <a href="index.html">Home</a>
-          <a href="index.html">View Site</a>
-        </nav>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login | TechNova Solutions</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+
+<body>
+
+<header class="hero">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">T</div>
+      <div>
+        <h1>TechNova Admin</h1>
+        <p class="tagline">Secure admin access</p>
       </div>
-    </header>
+    </div>
 
-    <main class="container">
-      <section>
-        <h2>Admin Access</h2>
-        <div id="setup-box">
-          <p>If this is your first time, create an admin account below. Otherwise use the login form.</p>
-        </div>
+    <nav class="site-nav">
+      <a href="index.html">Home</a>
+      <a href="index.html">View Site</a>
+    </nav>
+  </div>
+</header>
 
-        <div id="forms">
-          <form id="login-form" class="contact-form" style="display:none">
-            <div class="form-group"><label for="login-username">Username</label><input id="login-username" required></div>
-            <div class="form-group"><label for="login-password">Password</label><input id="login-password" type="password" required></div>
-            <div class="form-actions"><button class="button" type="submit">Sign In</button></div>
-          </form>
+<main class="container">
+  <section>
+    <h2>Admin Login</h2>
 
-          <form id="setup-form" class="contact-form" style="display:none">
-            <div class="form-group"><label for="setup-username">Choose admin username</label><input id="setup-username" required></div>
-            <div class="form-group"><label for="setup-password">Choose password</label><input id="setup-password" type="password" required></div>
-            <div class="form-group"><label for="setup-password2">Confirm password</label><input id="setup-password2" type="password" required></div>
-            <div class="form-actions"><button class="button" type="submit">Create Admin Account</button></div>
-          </form>
-        </div>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <div class="container">
-        <p>Note: This is a demo client-side admin. For production use, add a proper backend and secure authentication.</p>
+    <form id="login-form" class="contact-form">
+      
+      <div class="form-group">
+        <label>Email</label>
+        <input id="login-email" type="email" required />
       </div>
-    </footer>
 
-    <script>
-      const CRED_KEY = 'technova_admin_credentials';
-      const SESSION_KEY = 'technova_admin_session';
+      <div class="form-group">
+        <label>Password</label>
+        <input id="login-password" type="password" required />
+      </div>
 
-      // If already signed in, skip login and go to dashboard
-      (function(){
-        const sess = localStorage.getItem(SESSION_KEY);
-        if(sess){ window.location.href = 'admin.html'; return; }
-      })();
+      <div class="form-actions">
+        <button class="button" type="submit">Sign In</button>
+      </div>
 
-      function hasCredentials(){ return !!localStorage.getItem(CRED_KEY); }
+    </form>
+  </section>
+</main>
 
-      function showSetup(){ document.getElementById('setup-form').style.display='block'; document.getElementById('login-form').style.display='none'; }
-      function showLogin(){ document.getElementById('setup-form').style.display='none'; document.getElementById('login-form').style.display='block'; }
+<footer class="site-footer">
+  <div class="container">
+    <p>Admin demo login system</p>
+  </div>
+</footer>
 
-      if(!hasCredentials()){
-        document.getElementById('setup-box').textContent = 'No admin account found. Create one now.';
-        showSetup();
-      } else { showLogin(); }
+<script>
+/* =========================
+   HARD-CODED ADMIN CREDENTIALS
+========================= */
+const ADMIN_EMAIL = "abdulaiposuwa273@central.edu.sl";
+const ADMIN_PASSWORD = "Abp2007";
 
-      document.getElementById('setup-form').addEventListener('submit', function(e){
-        e.preventDefault();
-        const u = document.getElementById('setup-username').value.trim();
-        const p = document.getElementById('setup-password').value;
-        const p2 = document.getElementById('setup-password2').value;
-        if(p !== p2){ alert('Passwords do not match'); return; }
-        localStorage.setItem(CRED_KEY, JSON.stringify({username:u,password:p}));
-        alert('Admin account created. Please sign in.');
-        showLogin();
-      });
+const SESSION_KEY = "technova_admin_session";
 
-      document.getElementById('login-form').addEventListener('submit', function(e){
-        e.preventDefault();
-        const u = document.getElementById('login-username').value.trim();
-        const p = document.getElementById('login-password').value;
-        const cred = JSON.parse(localStorage.getItem(CRED_KEY) || 'null');
-        if(!cred){ alert('No admin account found. Create one first.'); showSetup(); return; }
-        if(u === cred.username && p === cred.password){
-          localStorage.setItem(SESSION_KEY, JSON.stringify({user:u,token:Date.now()}));
-          window.location.href = 'admin.html';
-        } else {
-          alert('Invalid username or password');
-        }
-      });
-    </script>
-  </body>
+/* =========================
+   AUTO REDIRECT IF LOGGED IN
+========================= */
+(function () {
+  const session = localStorage.getItem(SESSION_KEY);
+  if (session) {
+    window.location.href = "admin.html";
+  }
+})();
+
+/* =========================
+   LOGIN HANDLER
+========================= */
+document.getElementById("login-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const email = document.getElementById("login-email").value.trim();
+  const password = document.getElementById("login-password").value;
+
+  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+
+    // create session
+    localStorage.setItem(
+      SESSION_KEY,
+      JSON.stringify({
+        email: email,
+        loginTime: Date.now()
+      })
+    );
+
+    alert("Login successful!");
+    window.location.href = "admin.html";
+
+  } else {
+    alert("Invalid email or password");
+  }
+});
+</script>
+
+</body>
 </html>
