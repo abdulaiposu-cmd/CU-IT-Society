@@ -46,11 +46,12 @@
               <option value="Exercise">Exercise</option>
               <option value="PDF Guide">PDF Guide</option>
               <option value="Video Resource">Video Resource</option>
+              <option value="Powerpoint">Powerpoint</option>
             </select>
           </div>
           <div class="form-group">
             <label for="t-file">Upload File (PDF, DOC, Images)</label>
-            <input id="t-file" type="file" accept=".pdf,.doc,.docx,.txt,.jpg,.png,.gif" />
+            <input id="t-file" type="file" accept=".pdf,.doc,.docx,.txt,.jpg,.png,.gif,.ppt,.pptx" />
           </div>
           <div class="form-group">
             <label for="t-link">OR external link (URL)</label>
@@ -80,13 +81,26 @@
       function getTutorials(){ try{ return JSON.parse(localStorage.getItem(TUTORIAL_KEY)||'[]'); }catch(e){return[]} }
       function saveTutorials(arr){ localStorage.setItem(TUTORIAL_KEY, JSON.stringify(arr)); }
       
-      function getFileExtIcon(filename){
-        const ext = filename.split('.').pop().toLowerCase();
-        if(['pdf'].includes(ext)) return '<i data-lucide="file-text" class="inline-icon"></i>';
-        if(['doc','docx'].includes(ext)) return '<i data-lucide="file-text" class="inline-icon"></i>';
-        if(['jpg','png','gif'].includes(ext)) return '<i data-lucide="image" class="inline-icon"></i>';
-        if(['txt'].includes(ext)) return '<i data-lucide="file-text" class="inline-icon"></i>';
-        return '<i data-lucide="link-2" class="inline-icon"></i>';
+     function getFileExtIcon(filename){
+    const ext = filename.split('.').pop().toLowerCase();
+
+    if(['pdf'].includes(ext)) 
+        return '<i data-lucide="file-text" class="inline-icon"></i>';
+
+    if(['doc','docx'].includes(ext)) 
+        return '<i data-lucide="file-text" class="inline-icon"></i>';
+
+    if(['ppt','pptx'].includes(ext)) 
+        return '<i data-lucide="presentation" class="inline-icon"></i>';
+
+    if(['jpg','png','gif'].includes(ext)) 
+        return '<i data-lucide="image" class="inline-icon"></i>';
+
+    if(['txt'].includes(ext)) 
+        return '<i data-lucide="file-text" class="inline-icon"></i>';
+
+    return '<i data-lucide="link-2" class="inline-icon"></i>';
+}
       }
 
       function getCategoryIcon(category){
